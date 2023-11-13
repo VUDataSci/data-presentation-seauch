@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Brest France", "label": "Brest France", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Martinique Caribbean", "label": "Martinique Caribbean", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cap-Haitien Haiti Caribbean", "label": "Cap-Haitien Haiti Caribbean", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cadiz Spain", "label": "Cadiz Spain", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Guadeloupe Caribbean", "label": "Guadeloupe Caribbean", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "St Lucia Caribbean", "label": "St Lucia Caribbean", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Malaga Spain", "label": "Malaga Spain", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "A Coru\u00f1a Spain", "label": "A Coru\u00f1a Spain", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "La Rochelle France", "label": "La Rochelle France", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Isle of Aix France", "label": "Isle of Aix France", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Mauritius Indian Ocean", "label": "Mauritius Indian Ocean", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Saint-Nazaire France", "label": "Saint-Nazaire France", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Honfleur France", "label": "Honfleur France", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Grand Bank Newfoundland", "label": "Grand Bank Newfoundland", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "St Johns Newfoundland Canada", "label": "St Johns Newfoundland Canada", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Plymouth England", "label": "Plymouth England", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Portsmouth  England", "label": "Portsmouth  England", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Madeira Portugal", "label": "Madeira Portugal", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Falmouth England", "label": "Falmouth England", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "S\u00e3o Tom\u00e9 and Pr\u00edncipe Africa", "label": "S\u00e3o Tom\u00e9 and Pr\u00edncipe Africa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Montevideo Uruguay", "label": "Montevideo Uruguay", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "UNKNOWN", "label": "UNKNOWN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Azores Portugal", "label": "Azores Portugal", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Havana Cuba", "label": "Havana Cuba", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Gibraltar", "label": "Gibraltar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Manila Philippines", "label": "Manila Philippines", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "St Catalina Brazil", "label": "St Catalina Brazil", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Veracruz Mexico", "label": "Veracruz Mexico", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cartagena Spain", "label": "Cartagena Spain", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Turks and Caicos", "label": "Turks and Caicos", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Miquelon Newfondland Canada", "label": "Miquelon Newfondland Canada", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "London England", "label": "London England", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Havre France", "label": "Havre France", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Antigua", "label": "Antigua", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kent England", "label": "Kent England", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Tahiti French Polynesia", "label": "Tahiti French Polynesia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sri Lanka", "label": "Sri Lanka", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "New York United States", "label": "New York United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Charlestown South Carolina United States", "label": "Charlestown South Carolina United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nantasket Massachusetts United States", "label": "Nantasket Massachusetts United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Devon England", "label": "Devon England", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nova Scotia Canada", "label": "Nova Scotia Canada", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "St Augustines Florida United States", "label": "St Augustines Florida United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Boston Massachusetts United States", "label": "Boston Massachusetts United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Texel Netherlands", "label": "Texel Netherlands", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "St Eustatius Caribbean", "label": "St Eustatius Caribbean", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Lisbon Portugal", "label": "Lisbon Portugal", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Tenerife Spain", "label": "Tenerife Spain", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Torbay England", "label": "Torbay England", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ascension", "label": "Ascension", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Chennai India", "label": "Chennai India", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jakarta Indonesia", "label": "Jakarta Indonesia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "St Helena Island", "label": "St Helena Island", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jersey", "label": "Jersey", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Norfolk Virginia United States", "label": "Norfolk Virginia United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jamaica", "label": "Jamaica", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Barbados", "label": "Barbados", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Quebec Canada", "label": "Quebec Canada", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Montserrat Caribbean", "label": "Montserrat Caribbean", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Madagascar", "label": "Madagascar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bermuda", "label": "Bermuda", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cape of Good Hope South Africa", "label": "Cape of Good Hope South Africa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cape Verde", "label": "Cape Verde", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bombay India", "label": "Bombay India", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Funchal Portugal", "label": "Funchal Portugal", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kolkata India", "label": "Kolkata India", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Falkland Islands", "label": "Falkland Islands", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Churchill Manitoba Canada", "label": "Churchill Manitoba Canada", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Svalbard", "label": "Svalbard", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bengal (Bangladesh/Indian)", "label": "Bengal (Bangladesh/Indian)", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Guernsey", "label": "Guernsey", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Yarmouth England", "label": "Yarmouth England", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Senegal", "label": "Senegal", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rotterdam Netherlands", "label": "Rotterdam Netherlands", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Portsmouth England", "label": "Portsmouth England", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sierra Leone Africa", "label": "Sierra Leone Africa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rio Sester Brazil", "label": "Rio Sester Brazil", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bali Indonesia", "label": "Bali Indonesia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bengkulu Indonesia", "label": "Bengkulu Indonesia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Java Indonesia", "label": "Java Indonesia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Gabon Africa", "label": "Gabon Africa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Newport Rhode Island United Sates", "label": "Newport Rhode Island United Sates", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Delaware United States", "label": "Delaware United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cork Ireland", "label": "Cork Ireland", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "St Augustins Bay Madagascar", "label": "St Augustins Bay Madagascar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cape Blanco Oregon United States", "label": "Cape Blanco Oregon United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Gambia", "label": "Gambia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Guangdong China", "label": "Guangdong China", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "New Zealand", "label": "New Zealand", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kerala India", "label": "Kerala India", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Amsterdam Netherlands", "label": "Amsterdam Netherlands", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Gulf Of Aden Indian Ocean", "label": "Gulf Of Aden Indian Ocean", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Gravesend England", "label": "Gravesend England", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Muscat Oman", "label": "Muscat Oman", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Pensacola Florida United States", "label": "Pensacola Florida United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Benin Africa", "label": "Benin Africa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ghana Africa", "label": "Ghana Africa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rhode Island United States", "label": "Rhode Island United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Malacca Malaysia", "label": "Malacca Malaysia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Savanah Georgia United States", "label": "Savanah Georgia United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Crany Island Virginia United States", "label": "Crany Island Virginia United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Brunswick Georgia United States", "label": "Brunswick Georgia United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Mauritania Africa", "label": "Mauritania Africa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Puerto Deseado Argentina", "label": "Puerto Deseado Argentina", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "York Factory Manitoba Canada", "label": "York Factory Manitoba Canada", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Moose Ontario Canada", "label": "Moose Ontario Canada", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Braamspunt Suriname", "label": "Braamspunt Suriname", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Middelburg Netherlands", "label": "Middelburg Netherlands", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ritthem Netherlands", "label": "Ritthem Netherlands", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Vlissingen Netherlands", "label": "Vlissingen Netherlands", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Dejima Japan", "label": "Dejima Japan", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Whitby Bay England", "label": "Whitby Bay England", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Dordrecht Netherlands", "label": "Dordrecht Netherlands", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Tongatapu Tonga", "label": "Tongatapu Tonga", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "New Caledonia", "label": "New Caledonia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cape Horn Chile", "label": "Cape Horn Chile", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Marquesas French Polynesia", "label": "Marquesas French Polynesia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Easter Island", "label": "Easter Island", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Callao Peru", "label": "Callao Peru", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Chilo\u00e9 Chile", "label": "Chilo\u00e9 Chile", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kedgeree India", "label": "Kedgeree India", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Surat India", "label": "Surat India", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Masulipatnam India", "label": "Masulipatnam India", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cuddalore India", "label": "Cuddalore India", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Colonia del Sacramento Uruguay", "label": "Colonia del Sacramento Uruguay", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Baltic Sea", "label": "Baltic Sea", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Concepci\u00f3n Chile", "label": "Concepci\u00f3n Chile", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Curacao Caribbean", "label": "Curacao Caribbean", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Urk Netherlands", "label": "Urk Netherlands", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Hellevoetsluis Netherlands", "label": "Hellevoetsluis Netherlands", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cameroon Africa", "label": "Cameroon Africa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Monrovia Liberia Africa", "label": "Monrovia Liberia Africa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "St Maarten Caribbean", "label": "St Maarten Caribbean", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "Brest France", "to": "Martinique Caribbean", "width": 1}, {"from": "Brest France", "to": "Cap-Haitien Haiti Caribbean", "width": 1}, {"from": "Brest France", "to": "Cadiz Spain", "width": 1}, {"from": "Brest France", "to": "Guadeloupe Caribbean", "width": 1}, {"from": "Brest France", "to": "St Lucia Caribbean", "width": 1}, {"from": "Brest France", "to": "Malaga Spain", "width": 1}, {"from": "Brest France", "to": "A Coru\u00f1a Spain", "width": 1}, {"from": "Martinique Caribbean", "to": "La Rochelle France", "width": 1}, {"from": "Martinique Caribbean", "to": "Isle of Aix France", "width": 1}, {"from": "Martinique Caribbean", "to": "Mauritius Indian Ocean", "width": 1}, {"from": "Martinique Caribbean", "to": "Guadeloupe Caribbean", "width": 1}, {"from": "Cap-Haitien Haiti Caribbean", "to": "Malaga Spain", "width": 1}, {"from": "Cap-Haitien Haiti Caribbean", "to": "Saint-Nazaire France", "width": 1}, {"from": "Cap-Haitien Haiti Caribbean", "to": "Guadeloupe Caribbean", "width": 1}, {"from": "Cap-Haitien Haiti Caribbean", "to": "St Lucia Caribbean", "width": 1}, {"from": "Cap-Haitien Haiti Caribbean", "to": "Cadiz Spain", "width": 1}, {"from": "Honfleur France", "to": "Grand Bank Newfoundland", "width": 1}, {"from": "Grand Bank Newfoundland", "to": "St Johns Newfoundland Canada", "width": 1}, {"from": "Cadiz Spain", "to": "Malaga Spain", "width": 1}, {"from": "Cadiz Spain", "to": "Plymouth England", "width": 1}, {"from": "Cadiz Spain", "to": "Portsmouth  England", "width": 1}, {"from": "Cadiz Spain", "to": "Madeira Portugal", "width": 1}, {"from": "Cadiz Spain", "to": "Falmouth England", "width": 1}, {"from": "Cadiz Spain", "to": "S\u00e3o Tom\u00e9 and Pr\u00edncipe Africa", "width": 1}, {"from": "Cadiz Spain", "to": "Montevideo Uruguay", "width": 1}, {"from": "Cadiz Spain", "to": "UNKNOWN", "width": 1}, {"from": "Cadiz Spain", "to": "Azores Portugal", "width": 1}, {"from": "Cadiz Spain", "to": "Havana Cuba", "width": 1}, {"from": "Cadiz Spain", "to": "Gibraltar", "width": 1}, {"from": "Cadiz Spain", "to": "Manila Philippines", "width": 1}, {"from": "Cadiz Spain", "to": "A Coru\u00f1a Spain", "width": 1}, {"from": "Cadiz Spain", "to": "Cadiz Spain", "width": 1}, {"from": "Cadiz Spain", "to": "St Catalina Brazil", "width": 1}, {"from": "Cadiz Spain", "to": "Veracruz Mexico", "width": 1}, {"from": "Cadiz Spain", "to": "Cartagena Spain", "width": 1}, {"from": "La Rochelle France", "to": "Turks and Caicos", "width": 1}, {"from": "La Rochelle France", "to": "Miquelon Newfondland Canada", "width": 1}, {"from": "Turks and Caicos", "to": "London England", "width": 1}, {"from": "Havre France", "to": "Guadeloupe Caribbean", "width": 1}, {"from": "Guadeloupe Caribbean", "to": "Antigua", "width": 1}, {"from": "Guadeloupe Caribbean", "to": "Portsmouth  England", "width": 1}, {"from": "Guadeloupe Caribbean", "to": "Kent England", "width": 1}, {"from": "Guadeloupe Caribbean", "to": "Tahiti French Polynesia", "width": 1}, {"from": "Mauritius Indian Ocean", "to": "Sri Lanka", "width": 1}, {"from": "Mauritius Indian Ocean", "to": "Portsmouth  England", "width": 1}, {"from": "New York United States", "to": "Plymouth England", "width": 1}, {"from": "New York United States", "to": "Charlestown South Carolina United States", "width": 1}, {"from": "New York United States", "to": "Nantasket Massachusetts United States", "width": 1}, {"from": "New York United States", "to": "Devon England", "width": 1}, {"from": "New York United States", "to": "Nova Scotia Canada", "width": 1}, {"from": "New York United States", "to": "Antigua", "width": 1}, {"from": "New York United States", "to": "Portsmouth  England", "width": 1}, {"from": "New York United States", "to": "St Augustines Florida United States", "width": 1}, {"from": "New York United States", "to": "Madeira Portugal", "width": 1}, {"from": "New York United States", "to": "Boston Massachusetts United States", "width": 1}, {"from": "New York United States", "to": "Texel Netherlands", "width": 1}, {"from": "New York United States", "to": "St Eustatius Caribbean", "width": 1}, {"from": "Plymouth England", "to": "St Johns Newfoundland Canada", "width": 1}, {"from": "Plymouth England", "to": "Lisbon Portugal", "width": 1}, {"from": "Plymouth England", "to": "Tenerife Spain", "width": 1}, {"from": "Plymouth England", "to": "Plymouth England", "width": 1}, {"from": "Plymouth England", "to": "Madeira Portugal", "width": 1}, {"from": "Plymouth England", "to": "Torbay England", "width": 1}, {"from": "Plymouth England", "to": "Ascension", "width": 1}, {"from": "Plymouth England", "to": "Chennai India", "width": 1}, {"from": "Plymouth England", "to": "Charlestown South Carolina United States", "width": 1}, {"from": "Plymouth England", "to": "Azores Portugal", "width": 1}, {"from": "Plymouth England", "to": "Boston Massachusetts United States", "width": 1}, {"from": "Plymouth England", "to": "Jakarta Indonesia", "width": 1}, {"from": "Plymouth England", "to": "Gibraltar", "width": 1}, {"from": "Plymouth England", "to": "St Helena Island", "width": 1}, {"from": "Plymouth England", "to": "Nova Scotia Canada", "width": 1}, {"from": "Jersey", "to": "Nova Scotia Canada", "width": 1}, {"from": "Nova Scotia Canada", "to": "Antigua", "width": 1}, {"from": "Nova Scotia Canada", "to": "Norfolk Virginia United States", "width": 1}, {"from": "Nova Scotia Canada", "to": "Boston Massachusetts United States", "width": 1}, {"from": "Nova Scotia Canada", "to": "Nantasket Massachusetts United States", "width": 1}, {"from": "Nova Scotia Canada", "to": "Charlestown South Carolina United States", "width": 1}, {"from": "Nova Scotia Canada", "to": "London England", "width": 1}, {"from": "Nova Scotia Canada", "to": "Torbay England", "width": 1}, {"from": "St Johns Newfoundland Canada", "to": "Portsmouth  England", "width": 1}, {"from": "St Johns Newfoundland Canada", "to": "Lisbon Portugal", "width": 1}, {"from": "St Johns Newfoundland Canada", "to": "London England", "width": 1}, {"from": "St Johns Newfoundland Canada", "to": "Azores Portugal", "width": 1}, {"from": "St Johns Newfoundland Canada", "to": "St Johns Newfoundland Canada", "width": 1}, {"from": "St Johns Newfoundland Canada", "to": "Jamaica", "width": 1}, {"from": "Portsmouth  England", "to": "Lisbon Portugal", "width": 1}, {"from": "Portsmouth  England", "to": "Madeira Portugal", "width": 1}, {"from": "Portsmouth  England", "to": "Tenerife Spain", "width": 1}, {"from": "Portsmouth  England", "to": "Chennai India", "width": 1}, {"from": "Portsmouth  England", "to": "Jamaica", "width": 1}, {"from": "Portsmouth  England", "to": "Antigua", "width": 1}, {"from": "Portsmouth  England", "to": "Nantasket Massachusetts United States", "width": 1}, {"from": "Portsmouth  England", "to": "Barbados", "width": 1}, {"from": "Portsmouth  England", "to": "Azores Portugal", "width": 1}, {"from": "Portsmouth  England", "to": "Boston Massachusetts United States", "width": 1}, {"from": "Portsmouth  England", "to": "Quebec Canada", "width": 1}, {"from": "Portsmouth  England", "to": "Montserrat Caribbean", "width": 1}, {"from": "Portsmouth  England", "to": "Norfolk Virginia United States", "width": 1}, {"from": "Portsmouth  England", "to": "S\u00e3o Tom\u00e9 and Pr\u00edncipe Africa", "width": 1}, {"from": "Portsmouth  England", "to": "Gibraltar", "width": 1}, {"from": "Portsmouth  England", "to": "Madagascar", "width": 1}, {"from": "Portsmouth  England", "to": "Bermuda", "width": 1}, {"from": "Portsmouth  England", "to": "Cape of Good Hope South Africa", "width": 1}, {"from": "Portsmouth  England", "to": "St Helena Island", "width": 1}, {"from": "Portsmouth  England", "to": "Cape Verde", "width": 1}, {"from": "Portsmouth  England", "to": "Bombay India", "width": 1}, {"from": "Lisbon Portugal", "to": "Boston Massachusetts United States", "width": 1}, {"from": "Lisbon Portugal", "to": "Cape of Good Hope South Africa", "width": 1}, {"from": "Lisbon Portugal", "to": "Texel Netherlands", "width": 1}, {"from": "Lisbon Portugal", "to": "Madeira Portugal", "width": 1}, {"from": "Lisbon Portugal", "to": "Gibraltar", "width": 1}, {"from": "Lisbon Portugal", "to": "Funchal Portugal", "width": 1}, {"from": "London England", "to": "St Helena Island", "width": 1}, {"from": "London England", "to": "Bombay India", "width": 1}, {"from": "London England", "to": "Kolkata India", "width": 1}, {"from": "London England", "to": "Cape of Good Hope South Africa", "width": 1}, {"from": "London England", "to": "Falkland Islands", "width": 1}, {"from": "London England", "to": "S\u00e3o Tom\u00e9 and Pr\u00edncipe Africa", "width": 1}, {"from": "London England", "to": "Quebec Canada", "width": 1}, {"from": "London England", "to": "Gibraltar", "width": 1}, {"from": "London England", "to": "Boston Massachusetts United States", "width": 1}, {"from": "London England", "to": "Churchill Manitoba Canada", "width": 1}, {"from": "London England", "to": "Svalbard", "width": 1}, {"from": "London England", "to": "Antigua", "width": 1}, {"from": "London England", "to": "Bengal (Bangladesh/Indian)", "width": 1}, {"from": "Torbay England", "to": "Madeira Portugal", "width": 1}, {"from": "Torbay England", "to": "Quebec Canada", "width": 1}, {"from": "Madeira Portugal", "to": "Cape Verde", "width": 1}, {"from": "Madeira Portugal", "to": "Cape of Good Hope South Africa", "width": 1}, {"from": "Madeira Portugal", "to": "St Helena Island", "width": 1}, {"from": "Madeira Portugal", "to": "Norfolk Virginia United States", "width": 1}, {"from": "Madeira Portugal", "to": "Antigua", "width": 1}, {"from": "Madeira Portugal", "to": "Tenerife Spain", "width": 1}, {"from": "Madeira Portugal", "to": "Guernsey", "width": 1}, {"from": "Madeira Portugal", "to": "Barbados", "width": 1}, {"from": "Madeira Portugal", "to": "Yarmouth England", "width": 1}, {"from": "Madeira Portugal", "to": "Kent England", "width": 1}, {"from": "Madeira Portugal", "to": "Jamaica", "width": 1}, {"from": "Madeira Portugal", "to": "Chennai India", "width": 1}, {"from": "Madeira Portugal", "to": "Senegal", "width": 1}, {"from": "Madeira Portugal", "to": "Rotterdam Netherlands", "width": 1}, {"from": "Madeira Portugal", "to": "Texel Netherlands", "width": 1}, {"from": "Madeira Portugal", "to": "St Eustatius Caribbean", "width": 1}, {"from": "Cape Verde", "to": "Ascension", "width": 1}, {"from": "Cape Verde", "to": "Portsmouth England", "width": 1}, {"from": "Cape Verde", "to": "Falkland Islands", "width": 1}, {"from": "Cape Verde", "to": "Cape of Good Hope South Africa", "width": 1}, {"from": "Cape Verde", "to": "Bermuda", "width": 1}, {"from": "Cape Verde", "to": "St Helena Island", "width": 1}, {"from": "Cape Verde", "to": "Senegal", "width": 1}, {"from": "Cape Verde", "to": "Sierra Leone Africa", "width": 1}, {"from": "Cape Verde", "to": "Funchal Portugal", "width": 1}, {"from": "Cape Verde", "to": "Rio Sester Brazil", "width": 1}, {"from": "Ascension", "to": "St Helena Island", "width": 1}, {"from": "Ascension", "to": "S\u00e3o Tom\u00e9 and Pr\u00edncipe Africa", "width": 1}, {"from": "Ascension", "to": "Tenerife Spain", "width": 1}, {"from": "St Helena Island", "to": "Bali Indonesia", "width": 1}, {"from": "St Helena Island", "to": "Cape of Good Hope South Africa", "width": 1}, {"from": "St Helena Island", "to": "Portsmouth England", "width": 1}, {"from": "St Helena Island", "to": "Bengkulu Indonesia", "width": 1}, {"from": "St Helena Island", "to": "Chennai India", "width": 1}, {"from": "St Helena Island", "to": "Java Indonesia", "width": 1}, {"from": "St Helena Island", "to": "Bombay India", "width": 1}, {"from": "Antigua", "to": "Antigua", "width": 1}, {"from": "Antigua", "to": "Barbados", "width": 1}, {"from": "Antigua", "to": "Azores Portugal", "width": 1}, {"from": "Antigua", "to": "Boston Massachusetts United States", "width": 1}, {"from": "Antigua", "to": "Gabon Africa", "width": 1}, {"from": "Antigua", "to": "Newport Rhode Island United Sates", "width": 1}, {"from": "Antigua", "to": "Falmouth England", "width": 1}, {"from": "Antigua", "to": "Charlestown South Carolina United States", "width": 1}, {"from": "Antigua", "to": "Delaware United States", "width": 1}, {"from": "Antigua", "to": "Cork Ireland", "width": 1}, {"from": "Tenerife Spain", "to": "St Augustins Bay Madagascar", "width": 1}, {"from": "Tenerife Spain", "to": "Charlestown South Carolina United States", "width": 1}, {"from": "Tenerife Spain", "to": "Jamaica", "width": 1}, {"from": "Tenerife Spain", "to": "Senegal", "width": 1}, {"from": "Tenerife Spain", "to": "Cape Blanco Oregon United States", "width": 1}, {"from": "Tenerife Spain", "to": "Gambia", "width": 1}, {"from": "Newport Rhode Island United Sates", "to": "Portsmouth England", "width": 1}, {"from": "Portsmouth England", "to": "Chennai India", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "Bombay India", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "Chennai India", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "Java Indonesia", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "Guangdong China", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "Falmouth England", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "New Zealand", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "Sri Lanka", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "Kerala India", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "Kent England", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "Amsterdam Netherlands", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "Texel Netherlands", "width": 1}, {"from": "Cape of Good Hope South Africa", "to": "Jakarta Indonesia", "width": 1}, {"from": "Bombay India", "to": "Gulf Of Aden Indian Ocean", "width": 1}, {"from": "Bombay India", "to": "Gravesend England", "width": 1}, {"from": "Bombay India", "to": "Kent England", "width": 1}, {"from": "Bombay India", "to": "Bengal (Bangladesh/Indian)", "width": 1}, {"from": "Bombay India", "to": "St Augustines Florida United States", "width": 1}, {"from": "Bombay India", "to": "Muscat Oman", "width": 1}, {"from": "Pensacola Florida United States", "to": "Kent England", "width": 1}, {"from": "Kent England", "to": "Barbados", "width": 1}, {"from": "Kent England", "to": "Java Indonesia", "width": 1}, {"from": "Kent England", "to": "Chennai India", "width": 1}, {"from": "Yarmouth England", "to": "Barbados", "width": 1}, {"from": "Barbados", "to": "Barbados", "width": 1}, {"from": "Barbados", "to": "Benin Africa", "width": 1}, {"from": "Barbados", "to": "Ghana Africa", "width": 1}, {"from": "Norfolk Virginia United States", "to": "Rhode Island United States", "width": 1}, {"from": "Norfolk Virginia United States", "to": "Charlestown South Carolina United States", "width": 1}, {"from": "Norfolk Virginia United States", "to": "Boston Massachusetts United States", "width": 1}, {"from": "Chennai India", "to": "Kerala India", "width": 1}, {"from": "Chennai India", "to": "St Augustins Bay Madagascar", "width": 1}, {"from": "Chennai India", "to": "Malacca Malaysia", "width": 1}, {"from": "Chennai India", "to": "Sri Lanka", "width": 1}, {"from": "Jamaica", "to": "S\u00e3o Tom\u00e9 and Pr\u00edncipe Africa", "width": 1}, {"from": "Boston Massachusetts United States", "to": "Charlestown South Carolina United States", "width": 1}, {"from": "Boston Massachusetts United States", "to": "Savanah Georgia United States", "width": 1}, {"from": "Charlestown South Carolina United States", "to": "St Augustines Florida United States", "width": 1}, {"from": "Crany Island Virginia United States", "to": "Brunswick Georgia United States", "width": 1}, {"from": "Guernsey", "to": "Montserrat Caribbean", "width": 1}, {"from": "Azores Portugal", "to": "Falkland Islands", "width": 1}, {"from": "Azores Portugal", "to": "Mauritania Africa", "width": 1}, {"from": "Azores Portugal", "to": "UNKNOWN", "width": 1}, {"from": "Falkland Islands", "to": "Falkland Islands", "width": 1}, {"from": "Falkland Islands", "to": "Puerto Deseado Argentina", "width": 1}, {"from": "Falkland Islands", "to": "Montevideo Uruguay", "width": 1}, {"from": "S\u00e3o Tom\u00e9 and Pr\u00edncipe Africa", "to": "Montevideo Uruguay", "width": 1}, {"from": "Falmouth England", "to": "Senegal", "width": 1}, {"from": "Falmouth England", "to": "St Eustatius Caribbean", "width": 1}, {"from": "Gravesend England", "to": "York Factory Manitoba Canada", "width": 1}, {"from": "Gravesend England", "to": "Moose Ontario Canada", "width": 1}, {"from": "Gravesend England", "to": "Churchill Manitoba Canada", "width": 1}, {"from": "Guangdong China", "to": "Malacca Malaysia", "width": 1}, {"from": "Bengal (Bangladesh/Indian)", "to": "Texel Netherlands", "width": 1}, {"from": "Senegal", "to": "Mauritania Africa", "width": 1}, {"from": "Sierra Leone Africa", "to": "Ghana Africa", "width": 1}, {"from": "Ghana Africa", "to": "Rio Sester Brazil", "width": 1}, {"from": "Ghana Africa", "to": "Braamspunt Suriname", "width": 1}, {"from": "Ghana Africa", "to": "Texel Netherlands", "width": 1}, {"from": "Ghana Africa", "to": "Middelburg Netherlands", "width": 1}, {"from": "Ghana Africa", "to": "Ritthem Netherlands", "width": 1}, {"from": "Ghana Africa", "to": "Vlissingen Netherlands", "width": 1}, {"from": "Ghana Africa", "to": "Amsterdam Netherlands", "width": 1}, {"from": "Jakarta Indonesia", "to": "Texel Netherlands", "width": 1}, {"from": "Jakarta Indonesia", "to": "Dejima Japan", "width": 1}, {"from": "Whitby Bay England", "to": "Svalbard", "width": 1}, {"from": "Svalbard", "to": "Amsterdam Netherlands", "width": 1}, {"from": "Svalbard", "to": "Dordrecht Netherlands", "width": 1}, {"from": "Svalbard", "to": "Rotterdam Netherlands", "width": 1}, {"from": "Savanah Georgia United States", "to": "Savanah Georgia United States", "width": 1}, {"from": "New Zealand", "to": "Tahiti French Polynesia", "width": 1}, {"from": "New Zealand", "to": "Tongatapu Tonga", "width": 1}, {"from": "New Zealand", "to": "New Caledonia", "width": 1}, {"from": "New Zealand", "to": "Cape Horn Chile", "width": 1}, {"from": "Tahiti French Polynesia", "to": "Tongatapu Tonga", "width": 1}, {"from": "Tahiti French Polynesia", "to": "Marquesas French Polynesia", "width": 1}, {"from": "Easter Island", "to": "Marquesas French Polynesia", "width": 1}, {"from": "Easter Island", "to": "Callao Peru", "width": 1}, {"from": "Easter Island", "to": "Chilo\u00e9 Chile", "width": 1}, {"from": "Sri Lanka", "to": "Vlissingen Netherlands", "width": 1}, {"from": "Sri Lanka", "to": "Ritthem Netherlands", "width": 1}, {"from": "Kedgeree India", "to": "Malacca Malaysia", "width": 1}, {"from": "Muscat Oman", "to": "Surat India", "width": 1}, {"from": "Masulipatnam India", "to": "Cuddalore India", "width": 1}, {"from": "Montevideo Uruguay", "to": "A Coru\u00f1a Spain", "width": 1}, {"from": "Montevideo Uruguay", "to": "Colonia del Sacramento Uruguay", "width": 1}, {"from": "Montevideo Uruguay", "to": "St Catalina Brazil", "width": 1}, {"from": "Montevideo Uruguay", "to": "Callao Peru", "width": 1}, {"from": "Havana Cuba", "to": "A Coru\u00f1a Spain", "width": 1}, {"from": "Havana Cuba", "to": "Veracruz Mexico", "width": 1}, {"from": "A Coru\u00f1a Spain", "to": "Baltic Sea", "width": 1}, {"from": "Callao Peru", "to": "Concepci\u00f3n Chile", "width": 1}, {"from": "Amsterdam Netherlands", "to": "Funchal Portugal", "width": 1}, {"from": "Amsterdam Netherlands", "to": "Braamspunt Suriname", "width": 1}, {"from": "Texel Netherlands", "to": "Braamspunt Suriname", "width": 1}, {"from": "Texel Netherlands", "to": "St Eustatius Caribbean", "width": 1}, {"from": "Texel Netherlands", "to": "Curacao Caribbean", "width": 1}, {"from": "Rotterdam Netherlands", "to": "Curacao Caribbean", "width": 1}, {"from": "St Eustatius Caribbean", "to": "Curacao Caribbean", "width": 1}, {"from": "St Eustatius Caribbean", "to": "Braamspunt Suriname", "width": 1}, {"from": "St Eustatius Caribbean", "to": "Middelburg Netherlands", "width": 1}, {"from": "St Eustatius Caribbean", "to": "Funchal Portugal", "width": 1}, {"from": "St Eustatius Caribbean", "to": "Urk Netherlands", "width": 1}, {"from": "Hellevoetsluis Netherlands", "to": "Braamspunt Suriname", "width": 1}, {"from": "Hellevoetsluis Netherlands", "to": "Curacao Caribbean", "width": 1}, {"from": "Braamspunt Suriname", "to": "Cameroon Africa", "width": 1}, {"from": "Braamspunt Suriname", "to": "Monrovia Liberia Africa", "width": 1}, {"from": "Braamspunt Suriname", "to": "Curacao Caribbean", "width": 1}, {"from": "Braamspunt Suriname", "to": "Middelburg Netherlands", "width": 1}, {"from": "Braamspunt Suriname", "to": "Ritthem Netherlands", "width": 1}, {"from": "Braamspunt Suriname", "to": "St Maarten Caribbean", "width": 1}, {"from": "Braamspunt Suriname", "to": "Vlissingen Netherlands", "width": 1}, {"from": "Ritthem Netherlands", "to": "Monrovia Liberia Africa", "width": 1}, {"from": "Monrovia Liberia Africa", "to": "Middelburg Netherlands", "width": 1}, {"from": "Middelburg Netherlands", "to": "St Maarten Caribbean", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
